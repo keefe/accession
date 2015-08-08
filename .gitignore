@@ -2,6 +2,7 @@
 .classpath
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
+target
 .project
 # Package Files #
 *.jar
