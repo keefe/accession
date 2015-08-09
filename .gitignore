@@ -4,6 +4,7 @@
 .mtj.tmp/
 target
 .project
+.settings/*
 # Package Files #
 *.jar
 *.war
