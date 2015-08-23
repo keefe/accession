@@ -1,5 +1,6 @@
 package us.categorize.accession.proto.apis;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -7,11 +8,17 @@ import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class HackerNews {
 	private String apiBase = "https://hacker-news.firebaseio.com/v0/";
 	private HttpClient client;
-	
+	private ObjectMapper mapper;
+
 	public HackerNews(){
+		mapper = new ObjectMapper();
 		SslContextFactory sslContextFactory = new SslContextFactory();
 
 		client = new HttpClient(sslContextFactory);
@@ -24,19 +31,24 @@ public class HackerNews {
 		}
 	}
 	
-	public void topStories(){
-		String apiLoc = "topstories.json?print=pretty";
-		try {
-			get(apiLoc);
-		} catch (InterruptedException | ExecutionException | TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+	public String[] topStories() throws InterruptedException, ExecutionException, TimeoutException, JsonParseException, JsonMappingException, IOException{
+		String topLoc = "topstories.json";
+		ContentResponse response = client.GET(apiBase+topLoc);
+		return mapper.readValue(response.getContentAsString(), String[].class);		
 	}
 	
-	private void get(String loc) throws InterruptedException, ExecutionException, TimeoutException{
+	public void readTopStories() throws InterruptedException, ExecutionException, TimeoutException, JsonParseException, JsonMappingException, IOException{
+		String top[] = topStories();
+		for(String story : top){
+			String response = client.GET(apiBase + "item/" + story + ".json").getContentAsString();
+			System.out.println(response);
+		}
+	}
+	private void get(String loc) throws InterruptedException, ExecutionException, TimeoutException, JsonParseException, JsonMappingException, IOException{
 		ContentResponse response = client.GET(apiBase+loc);
-		System.out.println(response.getContentAsString());
+		ObjectMapper mapper = new ObjectMapper();
+		String newStories[] = mapper.readValue(response.getContentAsString(), String[].class);
+		System.out.println("Total New Stories " + newStories.length + " first is " + newStories[0]);
+		
 	}
 }
