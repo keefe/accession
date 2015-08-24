@@ -36,6 +36,7 @@ public class HackerNews {
 	private LinkedList<String> storyStack = new LinkedList<String>();
 	private Set<String> seenStory = new HashSet<String>();
 	private Map<String, String> external2internal = new HashMap<String, String>();
+	private Map<String, String> internal2thread = new HashMap<String, String>();
 	
 	public HackerNews(){
 		mapper = new ObjectMapper();
@@ -100,11 +101,16 @@ public class HackerNews {
 		}
 		String id = map.get("id").toString();
 		String firstKid = kids.length>0?kids[0]:"";
+
 		if(map.containsKey("parent")){
 			String parent = map.get("parent").toString();
 			String internalParent = external2internal.get(parent);
 			if(internalParent!=null){
 				response = response.replaceFirst("\\{", "{\"repliesTo\":\""+internalParent+"\",");
+//				String threadId = internalParent;
+//				while(internal2thread.get(threadId)!=null){
+//					threadId = internal2thread.get(threadId);//TODO DANGER infinite loop
+//				}
 			}else{
 				System.err.println(parent + " has no internal mapping but this is DFS so how that possible?");
 			}
