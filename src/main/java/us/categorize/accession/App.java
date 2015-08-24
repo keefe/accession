@@ -1,5 +1,8 @@
 package us.categorize.accession;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.HttpCookie;
 import java.util.concurrent.ExecutionException;
@@ -21,7 +24,10 @@ public class App
     {
     	//to retrieve this value, loging to the server locally and check the logs
         System.out.println( "Hello World!" );
-        cookie = new HttpCookie("JSESSIONID", "014A55893E0E4E0DA5251AC4EFEEA8F0");
+        BufferedReader reader = new BufferedReader(new FileReader(new File("/tmp/categorizeus")));
+        String lastSession = reader.readLine();
+        System.out.println("Connecting with session " + lastSession);
+        cookie = new HttpCookie("JSESSIONID", lastSession);
 //        cookie.setDomain("");
 //        cookie.setMaxAge(123);
         HackerNews news = new HackerNews();
