@@ -21,7 +21,7 @@ public class App
     {
     	//to retrieve this value, loging to the server locally and check the logs
         System.out.println( "Hello World!" );
-        cookie = new HttpCookie("JSESSIONID", "66F8DAC1864934806CC93874CF275806");
+        cookie = new HttpCookie("JSESSIONID", "014A55893E0E4E0DA5251AC4EFEEA8F0");
 //        cookie.setDomain("");
 //        cookie.setMaxAge(123);
         HackerNews news = new HackerNews();

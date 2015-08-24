@@ -2,6 +2,9 @@ package us.categorize.accession.proto.apis;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -99,6 +102,27 @@ public class HackerNews {
 			}else{
 				System.err.println(parent + " has no internal mapping but this is DFS so how that possible?");
 			}
+		}
+		if(map.containsKey("title")){
+			String title = map.get("title").toString();
+			List<String> words = Arrays.asList(title.split(" "));
+			Collections.sort(words, new Comparator<String>(){
+
+				public int compare(String o1, String o2) {
+					if(o1.length()<o2.length()) return 1;
+					if(o1.length()>o2.length()) return -1;
+					return 0;
+				}
+				
+			});
+			String tagString = "";
+			for(int i=0; i<words.size();i++){
+				tagString = tagString+=words.get(i).toLowerCase();
+				if(i!=words.size()-1)
+					tagString += " ";
+			}
+			response = response.replaceFirst("\\{", "{\"tagString\":\""+tagString+"\",");
+
 		}
 		for(String kid : kids){
 			storyStack.addFirst(kid);
