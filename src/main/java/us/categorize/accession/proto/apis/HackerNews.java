@@ -71,8 +71,14 @@ public class HackerNews {
 	}
 
 	private void readStack() throws JsonParseException, JsonMappingException, InterruptedException, ExecutionException, TimeoutException, IOException {
-		while(!storyStack.isEmpty())
-			parseStory(storyStack.removeFirst());
+		while(!storyStack.isEmpty()){
+			try {
+				parseStory(storyStack.removeFirst());
+			} catch (Exception e) {
+				e.printStackTrace();
+				Thread.sleep(10000);
+			}
+		}
 	}
 
 	private void parseStory(String story) throws InterruptedException, ExecutionException, TimeoutException,
@@ -80,7 +86,7 @@ public class HackerNews {
 		if(seenStory.contains(story)) return;
 		seenStory.add(story);
 		String response = client.GET(apiBase + "item/" + story + ".json").getContentAsString();
-		response.replaceAll("\"text\"", "\"body\"");
+		response = response.replaceAll("\"text\"", "\"body\"");
 		Map<String,Object> map = mapper.readValue(response, 
 			    new TypeReference<HashMap<String,Object>>(){});
 //	String kids[] = mapper.readValue(map.get("kids")[0], String[].class);
